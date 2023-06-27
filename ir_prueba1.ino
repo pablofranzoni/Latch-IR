@@ -1,10 +1,9 @@
 /*
- * ir_prueba1.ino
+ * ir_prueba1.cpp
  *
- *
- ************************************************************************************
  */
-#define DECODE_NEC  
+#define DECODE_NEC  // Includes Apple and Onkyo
+
 #include <Arduino.h>
 #include "PinDefinitionsAndMore.h"  // Define macros for input and output pin etc.
 #include <IRremote.hpp>
@@ -23,16 +22,17 @@ void setup() {
 void loop() {
 
   if (IrReceiver.decode()) {
-    Serial.println(IrReceiver.decodedIRData.decodedRawData, HEX);  // Print "old" raw data
-    
-    IrReceiver.printIRResultShort(&Serial);  // Print complete received data in one line
-    IrReceiver.printIRSendUsage(&Serial);    // Print the statement required to send this data
+    //Serial.println(IrReceiver.decodedIRData.decodedRawData, HEX);  // Print "old" raw data
+    // USE NEW 3.x FUNCTIONS
+    //IrReceiver.printIRResultShort(&Serial);  // Print complete received data in one line
+    //IrReceiver.printIRSendUsage(&Serial);    // Print the statement required to send this data
 
     if (currentIndex > 0 && millis() - startTime >= 10000) {
       Serial.println("EXCEDIO TIEMPO");
       currentIndex = 0;
     }
 
+    // Obtener el tiempo actual
     unsigned long actualTime = millis();
 
     // Verificar si ha pasado suficiente tiempo desde la última repetición
@@ -68,16 +68,17 @@ void processDecodedIRData(uint16_t key) {
         Serial.print("IDX: ");
         Serial.print(currentIndex);
         Serial.print("KEY: ");
-        Serial.println(key);
+        Serial.println(key, HEX);
         currentIndex++;
       }  
       if (currentIndex == 4) {
         Serial.print("NUMS: ");
         for (int i = 0; i < 4; i++) {
-          Serial.print(inputArray[i]);
+          Serial.print(inputArray[i], HEX);
           Serial.print("|");
         }
         Serial.println();
+        currentIndex = 5;
       }
       
     }  else {
